@@ -1,0 +1,18 @@
+version: '2'
+services:
+  gbtmaker:
+    image: btcpool
+    restart: always
+    hostname: HOSTNAME
+    volumes:
+      - /opt/btcpool:/opt/btcpool
+    command:
+      ['gbtmaker'] 
+  jobmaker:
+    image: btcpool
+    restart: always
+    hostname: HOSTNAME
+    volumes:
+      - /opt/btcpool:/opt/btcpool
+    command:
+      ['jobmaker'] 
