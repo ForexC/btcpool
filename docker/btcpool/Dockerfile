@@ -12,7 +12,7 @@ MAINTAINER HyperWang <hyperwangee@gmail.com>
 ENV HOME /root
 
 # use aliyun source
-ADD sources-aliyun.com.list /etc/apt/sources.list
+ADD docker/btcpool/sources-aliyun.com.list /etc/apt/sources.list
 
 # apt-get
 RUN apt-get update
@@ -56,10 +56,26 @@ RUN cd libevent-2.0.22-stable \
     && make install
 
 ### btcpool
-RUN apt-get install -y git
-RUN mkdir -p /work \
-    && cd /work \
-    && git clone https://github.com/btccom/btcpool.git
+#RUN apt-get install -y git
+#RUN mkdir -p /work \
+#    && cd /work \
+#    && git clone https://github.com/btccom/btcpool.git
+#RUN cd /work/btcpool \
+#    && mkdir build \
+#    && cd build \
+#    && cmake -DCMAKE_BUILD_TYPE=Release .. \
+#    && make
+#RUN cd /work/btcpool/build \
+#    && cp gbtmaker blkmaker jobmaker /usr/local/bin \
+#    && cp poolwatcher sharelogger sserver /usr/local/bin \
+#    && cp slparser statshttpd /usr/local/bin 
+
+#RUN apt-get install -y git
+RUN mkdir -p /work/btcpool
+ADD src /work/btcpool/src
+ADD test /work/btcpool/test
+ADD cmake /work/btcpool/cmake
+ADD CMakeLists.txt /work/btcpool/CMakeLists.txt
 RUN cd /work/btcpool \
     && mkdir build \
     && cd build \
@@ -74,6 +90,6 @@ RUN cd /work/btcpool/build \
 RUN mkdir -p /opt/btcpool/conf
 RUN mkdir -p /opt/btcpool/log
 WORKDIR /root/
-ADD run.py run.py
+ADD docker/btcpool/run.py run.py
 ENTRYPOINT ["python", "run.py"]
 CMD ["-h"]
