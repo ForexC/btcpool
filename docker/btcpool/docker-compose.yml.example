@@ -4,6 +4,13 @@ services:
     image: btcpool
     restart: always
     hostname: HOSTNAME
+    environment: 
+        GBTMAKER_GBTMAKER_RPCINTERVAL: 6
+        GBTMAKER_GBTMAKER_IS_CHECK_ZMQ: "false"
+        GBTMAKER_BITCOIND_ZMQ_ADDR: "tcp://192.168.16.1:8331"
+        GBTMAKER_BITCOIND_RPC_ADDR: "tcp://192.168.16.1:8332"
+        GBTMAKER_BITCOIND_RPC_USERPWD: "haobtc:defaultpassword"
+        GBTMAKER_KAFKA_BROKERS: "10.0.0.1:9092,10.0.0.2:9092,10.0.0.3:9092"
     volumes:
       - /opt/btcpool:/opt/btcpool
     command:
