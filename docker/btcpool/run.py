@@ -37,23 +37,34 @@ for k,v in os.environ.iteritems():
     if not k.startswith(bin_name.upper()):
         continue
     k = k[len(bin_name)+1:].lower()
-    k1, k2 = k.split('_', 1)
+    if '__' not in k:
+        conf[k] = v
+        continue
+    k1, k2 = k.split('__', 1)
     if k1 not in conf:
         conf[k1] = {}
     conf[k1][k2] = v
 
+
+def write_line(f, k, v):
+    if v in ['true', 'false']:
+        f.write("%s = %s;\n"%(k, v))
+        return
+    try:
+        v = int(v)
+        f.write("%s = %d;\n"%(k, v))
+    except ValueError:
+        f.write("%s = \"%s\";\n"%(k, v))
+
+
 with open(conf_file, 'w+') as f:
-    for k1, d in conf.iteritems():
+    for k1, v1 in conf.iteritems():
+        if not isinstance(v1, dict):
+            write_line(f, k1, v1)
+            continue
         f.write("%s = {\n"%k1)
-        for k2, v in d.iteritems():
-            if v in ['true', 'false']:
-                f.write("\t%s = %s;\n"%(k2, v))
-                continue
-            try:
-                v = int(v)
-                f.write("\t%s = %d;\n"%(k2, v))
-            except ValueError:
-                f.write("\t%s = \"%s\";\n"%(k2, v))
+        for k2, v2 in v1.iteritems():
+            write_line(f, k2, v2)
         f.write("};\n\n")
 
 # Execute the component
